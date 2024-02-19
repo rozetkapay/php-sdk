@@ -23,7 +23,7 @@ require 'vendor/autoload.php';
 \RozetkaPay\Configuration::setCallbackUrl('https://localhost:8000/callback');
 
 //Creates an endpoint for Payment
-$pay = new \RozetkaPay\Api\Payment();
+$rpay = new \RozetkaPay\Api\Payment();
 
 //Creates an instance with payment data
 $dataRequest = new \RozetkaPay\Model\Payment\RequestCreatePay();
@@ -35,7 +35,7 @@ $dataRequest->external_id = 500209;
 /**  @var \RozetkaPay\Model\ResponsesError $error */
 list($data, $error) = $rpay->create($dataRequest);
 
-if($error !== false){
+if($data !== false){
     print $data->getCheckoutUrl();
 }else{
     print_r($error);

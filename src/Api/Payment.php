@@ -123,7 +123,7 @@ class Payment extends \RozetkaPay\Api\Api {
         
         list($result, $error) = parent::Request($method, $url, $headers, $params);
         
-        if($error === false){
+        if($result !== false){
             $result = new Responses($result);
         }
         
