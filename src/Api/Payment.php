@@ -4,6 +4,7 @@ namespace RozetkaPay\Api;
 
 use RozetkaPay\Model\ResponsesError;
 use RozetkaPay\Model\Payment\Responses;
+use RozetkaPay\Model\Payment\ResponsesInfo;
 
 class Payment extends \RozetkaPay\Api\Api {
 
@@ -16,10 +17,14 @@ class Payment extends \RozetkaPay\Api\Api {
         ];
         
         $external_id = $this->externalIdToStr($external_id);
-
-        //$this->validate($requiredParams, $this->requiredParams);
         
-        return $this->Request('GET', "/info?external_id=". $external_id, [], ['external_id' => $external_id]);
+        list($result, $error) = $this->Request('GET', "/info?external_id=". $external_id, [], ['external_id' => $external_id], false);
+        
+        if($result !== false){
+            $result = new ResponsesInfo($result);
+        }
+        
+        return [$result, $error];
         
     }
 
@@ -83,7 +88,7 @@ class Payment extends \RozetkaPay\Api\Api {
 
     /**
      * 
-     * @param \RozetkaPay\Model\Request $params
+     * @param \RozetkaPay\Model\Payment\RequestRefund $params
      * @return array [\RozetkaPay\Model\Payment\Responses,\RozetkaPay\Model\ResponsesError]
      */
     public function refund($params) {
@@ -119,11 +124,11 @@ class Payment extends \RozetkaPay\Api\Api {
         
     }
     
-    public function Request($method, $url, $headers = [], $params = []) {
+    public function Request($method, $url, $headers = [], $params = [], $isConvertResponses = true) {
         
         list($result, $error) = parent::Request($method, $url, $headers, $params);
         
-        if($result !== false){
+        if($isConvertResponses && $result !== false){
             $result = new Responses($result);
         }
         
