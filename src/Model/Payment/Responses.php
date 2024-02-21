@@ -6,75 +6,59 @@ use RozetkaPay\Model;
 
 class Responses extends Model\Model{
     
-    //======================= purchased ============================================================
-    
-    public $amount = 0;
-    
-    
-    
-    public $purchased;
-    
-    
-    public $purchase_details = array();
-    
-    //==============================================================================================
-    
-    //======================= canceled= ============================================================
-    
-    public $amount_canceled = 0;
-    
-    
-    
-    public $canceled;
-    
-    
-    public $cancellation_details = array();
-    
-    //==============================================================================================
-    
-    
-    public $amount_confirmed = 0;    
-    
-    
-    public $confirmed;
-    
-    
-    public $confirmation_details = array();
-    
-    //==============================================================================================
-    
-    
-    public $amount_refunded = 0;    
-    
-    
-    public $refunded;
-    
-    
-    public $refund_details = array();
-    
-    //==============================================================================================
-    
-    
+    /**
+     * 
+     * @var Model\UserAction
+     */
     public $action;
     
-    
+    /**
+     * 
+     * @var bool
+     */
     public $action_required;
     
+    /**
+     * 
+     * @var Model\TransactionDetails
+     */
+    public $details;
     
-    public $currency = "UAH";    
-    
-    
-    public $created_at;
-    
-    
+    /**
+     * 
+     * @var string
+     */
     public $external_id;
     
-    
+    /**
+     * 
+     * @var string
+     */
     public $id;
     
+    /**
+     * 
+     * @var bool
+     */
+    public $is_success;
     
+    /**
+     * 
+     * @var string
+     */
     public $receipt_url;
     
+    /**
+     * 
+     * @var Model\Payment\RequestPaymentMethods
+     */
+    public $payment_method;
+    
+    /**
+     * 
+     * @var Model\Customer
+     */
+    public $customer;
     
     public function __construct($data = []) {
         
@@ -84,33 +68,19 @@ class Responses extends Model\Model{
             $this->action = new Model\UserAction($data['action']);            
         }
         
-        if(isset($data['purchase_details']) && !empty($data['purchase_details'])){
-            foreach ((array)$data['purchase_details'] as $detail) {
-                $this->purchase_details = [];
-                $this->purchase_details[] = new Model\TransactionDetails($detail);      
-            }
+        if(isset($data['details']) && !empty($data['details'])){            
+            $this->details = new Model\TransactionDetails($data['details']);            
         }
         
-        if(isset($data['confirmation_details']) && !empty($data['confirmation_details'])){
-            $this->confirmation_details = [];
-            foreach ((array)$data['confirmation_details'] as $detail) {
-                $this->confirmation_details[] = new Model\TransactionDetails($detail);      
-            }
+        if(isset($data['payment_method']) && !empty($data['payment_method'])){            
+            $this->payment_method = new Model\Payment\RequestPaymentMethods($data['payment_method']);            
         }
         
-        if(isset($data['cancellation_details']) && !empty($data['cancellation_details'])){
-            $this->cancellation_details = [];
-            foreach ((array)$data['cancellation_details'] as $detail) {
-                $this->cancellation_details[] = new Model\TransactionDetails($detail);      
-            }
+        
+        if(isset($data['customer']) && !empty($data['customer'])){
+            $this->customer = new Model\UserInfo($data['customer']);
         }
         
-        if(isset($data['refund_details']) && !empty($data['refund_details'])){
-            $this->refund_details = [];
-            foreach ((array)$data['refund_details'] as $detail) {
-                $this->refund_details[] = new Model\TransactionDetails($detail);      
-            }
-        }
     }
     
     public function getCheckoutUrl() {
@@ -120,5 +90,5 @@ class Responses extends Model\Model{
         }
         return '';
     }
-    
+        
 }
