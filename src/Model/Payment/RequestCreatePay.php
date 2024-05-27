@@ -26,7 +26,7 @@ class RequestCreatePay {
     
     /**
      * 
-     * @var RozetkaPay\Model\Payment\Customer
+     * @var \RozetkaPay\Model\Payment\Customer
      */
     public $customer;
     
