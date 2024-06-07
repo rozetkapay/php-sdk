@@ -9,17 +9,12 @@ use RozetkaPay\Helper;
 class Api {
 
     protected $url = '';
-    
     protected $client;
-    
     protected $version;
-    
     protected $login;
-    
     protected $password;
 
     public function __construct() {
-
         $this->client = Configuration::getHttpClient();
     }
 
@@ -30,12 +25,12 @@ class Api {
         $headers = [];
         $headers[] = 'Content-Type: application/json';
         $headers[] = 'Authorization: Basic ' . Configuration::getBasicAuth();
-        
-        if(isset($params->callback_url) && empty($params->callback_url)){
+
+        if (isset($params->callback_url) && empty($params->callback_url)) {
             $params->callback_url = Configuration::getCallbackUrl();
         }
 
-        if(isset($params->result_url) && empty($params->result_url)){
+        if (isset($params->result_url) && empty($params->result_url)) {
             $params->result_url = Configuration::getResultUrl();
         }
 
@@ -50,26 +45,59 @@ class Api {
         }
 
         $result = $this->jsonToArray($response);
-        
+
         $error = false;
-        if(isset($result['code'])){            
+        if (isset($result['code'])) {
             $error = new \RozetkaPay\Model\ResponsesError($result);
             $result = false;
         }
-        
+
         return [$result, $error];
-        
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getHeaderSignature() {
+
+        foreach (getallheaders() as $key => $value) {
+            if ($key === "X-ROZETKAPAY-SIGNATURE") {
+                return $value;
+            }
+        }
+
+        return "";
     }
 
     protected function createUrl($url) {
         return Configuration::getApiUrl() . $this->url . Configuration::getApiVersionUrl() . $url;
     }
 
-    public static function toJSON($data) {
-        return json_encode($data);
+    
+    private function base64url_encode($data) {
+        return strtr(base64_encode($data), '+/', '-_');
+    }
+    
+    /**
+     * 
+     * @param string $data
+     * @return string
+     */
+    public function getSignature($data) {
+        
+        if(gettype($data) !== "string"){            
+            $data = $this->toJSON($data);            
+        }
+        
+        return strtr(base64_encode(sha1(Configuration::getPassword() . strtr(base64_encode($data), '+/', '-_') . Configuration::getPassword(), true)), '+/', '-_');
     }
 
-    public static function jsonToArray($data) {
+    public function toJSON($data) {
+        return json_encode($data, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function jsonToArray($data) {
         return json_decode($data, TRUE);
     }
 

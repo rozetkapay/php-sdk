@@ -10,6 +10,8 @@ $dataRequest = new \RozetkaPay\Model\Payment\RequestCreatePay();
 
 $dataRequest->amount = 100;
 $dataRequest->external_id = 500209 ."_". uniqid();
+echo '<h1>Order id:' .$dataRequest->external_id . '</h1><br>';
+$_SESSION['external_id'] = $dataRequest->external_id;
 
 //If you need to transfer the order ID to the return link, you can still do it this way
 

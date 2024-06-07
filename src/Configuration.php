@@ -14,8 +14,7 @@ class Configuration {
     
     public static function setDev() {
         //self::$ApiUrl = 'api-epdev.rozetkapay.com';
-        self::$BasicAuth = base64_encode("a6a29002-dc68-4918-bc5d-51a6094b14a8:XChz3J8qrr");
-        
+        self::setBasicAuth("a6a29002-dc68-4918-bc5d-51a6094b14a8", "XChz3J8qrr");        
     }
     
     private static $ApiVersion = '1';
@@ -27,6 +26,9 @@ class Configuration {
     private static $callbackUrl = '';
     
     private static $HttpClient = 'HttpCurl';
+    
+    private static $login = "";
+    private static $password = "";
     
     public static function getCallbackUrl() {
         return self::$callbackUrl;
@@ -51,8 +53,18 @@ class Configuration {
     }
     
     public static function setBasicAuth($login, $password) {
+        self::$login = $login;
+        self::$password = $password;
         self::$BasicAuth = base64_encode($login . ":" . $password);
-    }    
+    }
+    
+    public static function getLogin() {
+        return self::$login;
+    }
+    
+    public static function getPassword() {
+        return self::$password;
+    }
     
     public static function getApiVersion() {
         return self::$ApiVersion;
