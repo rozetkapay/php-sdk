@@ -60,23 +60,12 @@ class Api {
      * @return string
      */
     public function getHeaderSignature() {
-
-        foreach (getallheaders() as $key => $value) {
-            if ($key === "X-ROZETKAPAY-SIGNATURE") {
-                return $value;
-            }
-        }
-
-        return "";
+        $headers = array_change_key_case(getallheaders(), CASE_UPPER);
+        return isset($headers["X-ROZETKAPAY-SIGNATURE"]) ? $headers["X-ROZETKAPAY-SIGNATURE"] : "";
     }
 
     protected function createUrl($url) {
         return Configuration::getApiUrl() . $this->url . Configuration::getApiVersionUrl() . $url;
-    }
-
-    
-    private function base64url_encode($data) {
-        return strtr(base64_encode($data), '+/', '-_');
     }
     
     /**
