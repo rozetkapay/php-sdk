@@ -29,6 +29,7 @@
     },
      "scripts": {
         "test-php": "vendor/bin/phpunit --colors --verbose --bootstrap tests/bootstrap.php --configuration tests/phpunit.xml"
-    }
+    },
+    "minimum-stability": "stable"
 
 }
